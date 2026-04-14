@@ -73,11 +73,11 @@ export const RegisterForm = () => {
                             <div className="grid gap-6">
                                 <div className="flex flex-col gap-4">
                                     <Button className="w-full" variant="outline" type="button" disabled={isPending}>
-                                        {/* <Image src="/github.svg" alt="Github" width={20} height={20} /> */}
+                                        <Image src="/logos/github.svg" alt="Github" width={20} height={20} />
                                         Continue With Github
                                     </Button>
                                     <Button className="w-full" variant="outline" type="button" disabled={isPending}>
-                                        {/* <Image src="/google.svg" alt="Google" width={20} height={20} /> */}
+                                        <Image src="/logos/google.svg" alt="Google" width={20} height={20} />
                                         Continue With Google
                                     </Button>
                                 </div>
