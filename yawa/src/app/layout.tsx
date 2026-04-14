@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { Toaster } from "sonner"
 import { TRPCReactProvider } from "@/trpc/client";
 import "./globals.css";
 
@@ -30,7 +31,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <TRPCReactProvider>
-          <TooltipProvider>{children}</TooltipProvider>
+          <TooltipProvider>
+            {children}
+            <Toaster/>
+          </TooltipProvider>
         </TRPCReactProvider>
       </body>
     </html>

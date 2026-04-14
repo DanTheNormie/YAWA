@@ -1,9 +1,14 @@
-import { baseProcedure, createTRPCRouter } from '@/trpc/init';
+import { baseProcedure, createTRPCRouter, protectedProcedure } from '@/trpc/init';
 import db from '@/lib/db';
 export const appRouter = createTRPCRouter({
-  getUsers: baseProcedure
-    .query(() => {
-      return db.user.findMany();
+  getUsers: protectedProcedure
+    .query(({ctx}) => {
+      console.log(ctx.auth.user.id)
+      return db.user.findMany({
+        where: {
+          id: ctx.auth.user.id
+        }
+      });
     }),
 });
 
