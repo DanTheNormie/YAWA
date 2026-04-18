@@ -22,7 +22,11 @@ export const processTask = inngest.createFunction(
                 model: google("gemma-4-26b-a4b-it"),
                 system: "You are a helpful assistant.",
                 prompt: "What is 2 + 2?",
-                maxRetries: 0,
+                experimental_telemetry:{
+                    isEnabled: true,
+                    recordInputs: true,
+                    recordOutputs: true,
+                }
 
             }
         )
