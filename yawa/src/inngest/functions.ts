@@ -9,34 +9,35 @@ import { openrouter } from "@openrouter/ai-sdk-provider";
 export const processTask = inngest.createFunction(
     {
         id: "execute-ai",
-        triggers: { event: "exec/ai" }
+        triggers: { event: "exec/ai" },
+        retries: 0,
     },
     async ({ event, step }) => {
 
         await step.sleep("wait-5-seconds", 5000)
 
-        const { steps: google_steps } = await step.ai.wrap(
-            "gemini-generate-text",
-            generateText,
-            {
-                model: google("gemma-4-26b-a4b-it"),
-                system: "You are a helpful assistant.",
-                prompt: "What is 2 + 2?",
-                experimental_telemetry:{
-                    isEnabled: true,
-                    recordInputs: true,
-                    recordOutputs: true,
-                }
+        // const google_step = await step.ai.wrap(
+        //     "gemini-generate-text",
+        //     generateText,
+        //     {
+        //         model: google("gemma-4-26b-a4b-it"),
+        //         system: "You are a helpful assistant.",
+        //         prompt: "What is 2 + 2?",
+        //         experimental_telemetry:{
+        //             isEnabled: true,
+        //             recordInputs: true,
+        //             recordOutputs: true,
+        //         }
 
-            }
-        )
+        //     }
+        // )
 
-        const openrouter_steps = await step.ai.wrap(
+        const openrouter_step = await step.ai.wrap(
             "openrouter-generate-text",
             generateText,
             {
-                model: openrouter.chat('nvidia/nemotron-3-super-120b-a12b:free'),
-                system: "You are a helpful assistant.",
+                model: openrouter.chat('liquid/lfm-2.5-1.2b-instruct:free'),
+                
                 prompt: "What is 2 + 2?",
                 maxRetries: 0,
                 experimental_telemetry:{
@@ -46,7 +47,7 @@ export const processTask = inngest.createFunction(
                 }
             })
 
-        const { steps: anthropic_steps } = await step.ai.wrap(
+        const anthropic_step = await step.ai.wrap(
             "anthropic-generate-text",
             generateText,
             {
@@ -57,22 +58,22 @@ export const processTask = inngest.createFunction(
             }
         )
 
-        const { steps: openai_steps } = await step.ai.wrap(
+        const openai_step = await step.ai.wrap(
             "openai-generate-text",
             generateText,
             {
                 model: openai("gpt-4o"),
                 system: "You are a helpful assistant.",
                 prompt: "What is 2 + 2?",
-                maxRetries: 0
-            }
+                maxRetries: 0,
+            },
         )
 
         return {
-            google_steps,
-            openrouter_steps,
-            anthropic_steps,
-            openai_steps,
+            //google_step,
+            openrouter_step,
+            anthropic_step,
+            openai_step,
         };
     }
 );
