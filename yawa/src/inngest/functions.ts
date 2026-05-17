@@ -3,7 +3,7 @@ import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 import { openai } from "@ai-sdk/openai";
 import { anthropic } from "@ai-sdk/anthropic";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { openrouter } from "@openrouter/ai-sdk-provider";
 
 
 export const processTask = inngest.createFunction(
@@ -31,20 +31,20 @@ export const processTask = inngest.createFunction(
             }
         )
 
-        const openrouter_steps = await step.run("openrouter-generate-text", async () => {
-            const apiKey = process.env.OPENROUTER_API_KEY
-            console.log("API KEY", apiKey)
-            const openrouter = createOpenRouter({
-                apiKey
-            })
-            const { text } = await generateText({
-                model: openrouter('nvidia/nemotron-3-super-120b-a12b:free'),
+        const openrouter_steps = await step.ai.wrap(
+            "openrouter-generate-text",
+            generateText,
+            {
+                model: openrouter.chat('nvidia/nemotron-3-super-120b-a12b:free'),
                 system: "You are a helpful assistant.",
                 prompt: "What is 2 + 2?",
-                maxRetries: 0
+                maxRetries: 0,
+                experimental_telemetry:{
+                    isEnabled: true,
+                    recordInputs: true,
+                    recordOutputs: true,
+                }
             })
-            return text
-        })
 
         const { steps: anthropic_steps } = await step.ai.wrap(
             "anthropic-generate-text",
@@ -70,6 +70,7 @@ export const processTask = inngest.createFunction(
 
         return {
             google_steps,
+            openrouter_steps,
             anthropic_steps,
             openai_steps,
         };
