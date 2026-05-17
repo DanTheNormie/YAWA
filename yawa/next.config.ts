@@ -11,7 +11,7 @@ export default withSentryConfig(nextConfig, {
 
   org: "yawa-7i",
 
-  project: "javascript-nextjs",
+  project: "yawa",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
