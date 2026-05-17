@@ -24,6 +24,7 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { authClient } from "@/lib/auth-client"
+import { useHasActiveSubscription } from "@/features/subscriptions/hooks/use-subscription"
 
 const menuItems = [
     {
@@ -51,6 +52,8 @@ const menuItems = [
 const AppSidebar = () => {
     const router = useRouter()
 
+    const { hasActiveSubscription, subscription, isLoading } = useHasActiveSubscription()
+
     const handleSignout = async () => {
         await authClient.signOut({
             fetchOptions: {
@@ -60,6 +63,15 @@ const AppSidebar = () => {
             },
         })
     }
+
+    const handleUpgrade = async () => {
+        const checkout = await authClient.checkout({slug: 'pro'})
+    }
+
+    const handleBillingPortal = async () => {
+        const portal = await authClient.customer.portal()
+    }
+
 
     return (
         <Sidebar collapsible="icon">
@@ -104,26 +116,24 @@ const AppSidebar = () => {
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            tooltip="Upgrade to Pro"
-                            asChild
-                            className="gap-x-4 h-10 px-4">
-                            <Link href="/upgrade">
+                    {!hasActiveSubscription && !isLoading && (
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                tooltip="Upgrade to Pro"
+                                onClick={handleUpgrade}
+                                className="gap-x-4 h-10 px-4">
                                 <StarIcon className="size-4" />
                                 <span>Upgrade to Pro</span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    )}
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             tooltip="Billing Portal"
-                            asChild
+                            onClick={handleBillingPortal}
                             className="gap-x-4 h-10 px-4">
-                            <Link href="/billing">
-                                <CreditCardIcon className="size-4" />
-                                <span>Billing Portal</span>
-                            </Link>
+                            <CreditCardIcon className="size-4" />
+                            <span>Billing Portal</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
